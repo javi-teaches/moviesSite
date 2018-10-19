@@ -10,7 +10,7 @@ class Movie extends Model
 
 	// protected $guarded = [];
 
-	// protected $fillable = ['title', 'rating', 'awards', 'length'];
+	protected $fillable = ['title', 'rating', 'awards', 'release_date'];
 
 	public function getTitleAndRating()
 	{

@@ -13,21 +13,16 @@ use Illuminate\Support\Facades\DB;
 |
 */
 
-Route::get('/', function () {
-   return view('index');
-});
-
-Route::get('/about', function () {
-	$listado = ['José', 'Cami', 'Javi', 'Ivan'];
-	$arrayVacio = [];
-
-   return view('about')->with(compact('listado', 'arrayVacio'));
-});
-
-Route::get('/genres', function () {
-	$genres = DB::table('genres')->get();
-   return view('genres.index')->with(compact('genres'));
-});
-
+// Route::get('/', function () {
+//    return view('index');
+// });
+//
+// Route::get('/genres', function () {
+// 	$genres = DB::table('genres')->get();
+//    return view('genres.index')->with(compact('genres'));
+// });
 
 Route::get('/movies', 'MoviesController@index');
+Route::get('/movies/create', 'MoviesController@create');
+Route::get('/movies/{id}', 'MoviesController@show');
+Route::post('/movies/store', 'MoviesController@store');
