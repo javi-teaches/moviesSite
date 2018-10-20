@@ -12,8 +12,15 @@ class Movie extends Model
 
 	protected $fillable = ['title', 'rating', 'awards', 'release_date'];
 
+	protected $dates = ['release_date'];
+
 	public function getTitleAndRating()
 	{
 		return $this->title . " " . $this->rating;
+	}
+
+	public function genre()
+	{
+		return $this->hasOne(Genre::class, 'id', 'genre_id');
 	}
 }

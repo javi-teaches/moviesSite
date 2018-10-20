@@ -70,37 +70,72 @@ class MoviesController extends Controller
 		return view('movies.show')->with(compact('movie'));
 	}
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+	/**
+	* Show the form for editing the specified resource.
+	*
+	* @param  int  $id
+	* @return \Illuminate\Http\Response
+	*/
+	public function edit($id)
+	{
+		$movie = Movie::findOrFail($id);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
+		return view('movies.editForm')->with( compact('movie') );
+	}
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
+	/**
+	* Update the specified resource in storage.
+	*
+	* @param  \Illuminate\Http\Request  $request
+	* @param  int  $id
+	* @return \Illuminate\Http\Response
+	*/
+	public function update(Request $request, $id)
+	{
+		$request->validate([
+			'title' => 'required',
+			'rating' => 'required | numeric | max:10',
+			'awards' => 'required | integer',
+			'release_date' => 'required',
+		], [
+			'title.required' => 'El título es obligatorio',
+			'rating.required' => 'El rating es obligatorio',
+			'rating.numeric' => 'El rating debe ser un número',
+			'rating.max' => 'El rating debe ser un número entre 0 y 10',
+			'awards.required' => 'Los premios son obligatorios',
+			'release_date.required' => 'La fecha de lanzamiento es obligatoria',
+		]);
+
+		$movie = Movie::find($id);
+
+		$movie->title = $request->title;
+		$movie->rating = $request->rating;
+		$movie->awards = $request->awards;
+		$movie->release_date = $request->release_date;
+
+		$movie->save();
+
+		return redirect('/movies')->with('edited', "Movie editada: $movie->title");
+	}
+
+	/**
+	* Remove the specified resource from storage.
+	*
+	* @param int $id
+	* @return \Illuminate\Http\Response
+	*/
+	public function destroy($id)
+	{
+		try {
+			$movie = Movie::findOrFail($id);
+			$movie->delete();
+			// Al hacer redirect se guarda en SESSION una posición deleted con el valor indicado
+			return redirect('/movies')->with('deleted', 'Peli eliminada');
+		} catch (\Exception $e) {
+			return redirect('/movies/'.$id)->with('errorDeleted', 'No se pudo eliminar :(');
+		}
+
+
+
+	}
 }
