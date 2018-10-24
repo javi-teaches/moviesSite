@@ -1,9 +1,12 @@
 @extends('layout.base')
 
+
 @section('title', 'Movies')
 
 @section('main_content')
 	<h2>Editando película: {{ $movie->title }}</h2>
+
+	<img src="/storage/posters/{{ $movie->poster }}" width="200">
 
 	@if (count($errors) > 0)
 		<div class="alert alert-danger">
@@ -15,7 +18,7 @@
 		</div>
 	@endif
 
-	<form action="/movies/{{ $movie->id }}" method="post">
+	<form action="/movies/{{ $movie->id }}" method="post" enctype="multipart/form-data">
 		@csrf
 		{{ method_field('PUT') }}
 		<div class="form-group">
@@ -41,6 +44,14 @@
 			<input type="text" name="awards" class="form-control"
 				value=" {{ old('awards', $movie->awards) }}"
 			>
+		</div>
+
+		<div class="form-group">
+			<label>Image:</label>
+			<div class="custom-file">
+		    	<input type="file" class="custom-file-input" id="customFile" name="poster">
+		    	<label class="custom-file-label" for="customFile">Choose file...</label>
+		  	</div>
 		</div>
 
 		<div class="form-group">

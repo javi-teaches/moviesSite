@@ -3,7 +3,7 @@
 @section('title', 'Movies')
 
 @section('main_content')
-	<h2>Listado de películas - Total ({{ count($movies) }})</h2>
+	<h2>Listado de películas - Total ({{ $allMovies }}) - {{ $myTime->toDateTimeString() }}</h2>
 
 	@if ( session('deleted') )
 		<div class="alert alert-success">
@@ -30,4 +30,6 @@
 		</li>
 	@endforeach
 	</ul>
+
+	{{ $movies->links() }}
 @endsection

@@ -15,9 +15,12 @@ class MoviesController extends Controller
 	*/
 	public function index()
 	{
-		$movies = Movie::orderBy('title')->get();
+		$myTime = \Carbon\Carbon::now('America/Argentina/Buenos_Aires');
 
-		return view('movies.index')->with( compact('movies') );
+		$movies = Movie::orderBy('title')->paginate(10);
+		$allMovies = Movie::all()->count();
+
+		return view('movies.index')->with( compact('movies', 'myTime', 'allMovies') );
 	}
 
 	/**
@@ -42,6 +45,7 @@ class MoviesController extends Controller
 			'title' => 'required',
 			'rating' => 'required | numeric | max:10',
 			'awards' => 'required | integer',
+			'poster' => 'required | mimes:jpeg,jpg,png',
 			'release_date' => 'required',
 		], [
 			'title.required' => 'El título es obligatorio',
@@ -50,9 +54,34 @@ class MoviesController extends Controller
 			'rating.max' => 'El rating debe ser un número entre 0 y 10',
 			'awards.required' => 'Los premios son obligatorios',
 			'release_date.required' => 'La fecha de lanzamiento es obligatoria',
+			'poster.required' => 'La imagen es obligatoria',
+			'poster.mimes' => 'Formatos permitidos JPG, y PNG',
 		]);
 
-		Movie::create($request->all());
+		// Movie::create($request->all());
+
+		$movie = new Movie;
+
+		$movie->title = $request->title;
+		$movie->rating = $request->rating;
+		$movie->awards = $request->awards;
+		$movie->release_date = $request->release_date;
+
+		// Necesito el archivo en una variable esta vez
+		$file = $request->file("poster");
+
+		// Nombre final de la imagen
+		$finalName = strtolower(str_replace(" ", "_", $request->input("title")));
+
+		// Armo un nombre único para este archivo
+		$name = $finalName . uniqid('_image_') . "." . $file->extension();
+
+		// Guardo el archivo en la carpeta
+		$path = $file->storePubliclyAs("public/posters", $name);
+
+		// Guardo en base de datos el nombre de la imagen
+		$movie->poster = $name;
+		$movie->save();
 
 		return redirect('/movies');
 	}
@@ -96,6 +125,7 @@ class MoviesController extends Controller
 			'title' => 'required',
 			'rating' => 'required | numeric | max:10',
 			'awards' => 'required | integer',
+			'poster' => 'required | mimes:jpeg,jpg,png',
 			'release_date' => 'required',
 		], [
 			'title.required' => 'El título es obligatorio',
@@ -104,6 +134,8 @@ class MoviesController extends Controller
 			'rating.max' => 'El rating debe ser un número entre 0 y 10',
 			'awards.required' => 'Los premios son obligatorios',
 			'release_date.required' => 'La fecha de lanzamiento es obligatoria',
+			'poster.required' => 'La imagen es obligatoria',
+			'poster.mimes' => 'Formatos permitidos JPG, y PNG',
 		]);
 
 		$movie = Movie::find($id);
@@ -112,6 +144,21 @@ class MoviesController extends Controller
 		$movie->rating = $request->rating;
 		$movie->awards = $request->awards;
 		$movie->release_date = $request->release_date;
+
+		// Necesito el archivo en una variable esta vez
+		$file = $request->file("poster");
+
+		// Nombre final de la imagen
+		$finalName = strtolower(str_replace(" ", "_", $request->input("title")));
+
+		// Armo un nombre único para este archivo
+		$name = $finalName . uniqid('_image_') . "." . $file->extension();
+
+		// Guardo el archivo en la carpeta
+		$path = $file->storePubliclyAs("public/posters", $name);
+
+		// Guardo en base de datos el nombre de la imagen
+		$movie->poster = $name;
 
 		$movie->save();
 

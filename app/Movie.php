@@ -10,7 +10,7 @@ class Movie extends Model
 
 	// protected $guarded = [];
 
-	protected $fillable = ['title', 'rating', 'awards', 'release_date'];
+	protected $fillable = ['title', 'rating', 'awards', 'release_date', 'poster'];
 
 	protected $dates = ['release_date'];
 
@@ -22,5 +22,10 @@ class Movie extends Model
 	public function genre()
 	{
 		return $this->hasOne(Genre::class, 'id', 'genre_id');
+	}
+
+	public function actors()
+	{
+		return $this->belongsToMany(Actor::class, 'actor_movie', 'movie_id', 'actor_id');
 	}
 }

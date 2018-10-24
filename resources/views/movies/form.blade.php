@@ -15,7 +15,7 @@
 		</div>
 	@endif
 
-	<form action="/movies/store" method="post">
+	<form action="/movies/store" method="post" enctype="multipart/form-data">
 		@csrf
 		<div class="form-group">
 			<label>Title:</label>
@@ -30,6 +30,14 @@
 		<div class="form-group">
 			<label>Awards:</label>
 			<input type="text" name="awards" class="form-control" value="{{ old('awards') }}">
+		</div>
+
+		<div class="form-group">
+			<label>Image:</label>
+			<div class="custom-file">
+		    	<input type="file" class="custom-file-input" id="customFile" name="poster">
+		    	<label class="custom-file-label" for="customFile">Choose file...</label>
+		  	</div>
 		</div>
 
 		<div class="form-group">

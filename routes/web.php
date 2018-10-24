@@ -30,8 +30,24 @@ Route::delete('/movies/{id}', 'MoviesController@destroy');
 Route::get('/movies/{id}/edit', 'MoviesController@edit');
 Route::put('/movies/{id}', 'MoviesController@update');
 
+Route::get('/actors', 'ActorsController@index');
 Route::get('/actors/search', 'ActorsController@search');
 Route::get('/actors/result/', 'ActorsController@result');
 
-
 Route::get('/genres', 'GenresController@index');
+
+
+Route::get('/testCollection', function (){
+	$movies = \App\Movie::all('title', 'rating');
+
+	$movies->push(['title' => 'ultima peli insertada']);
+
+	$nuevaVariable = $movies->implode('title', ' - ');
+
+	$myArray = [
+		'nombre' => 'Javi',
+		'apellido' => 'Herrera'
+	];
+
+	dd($movies->pluck('title')->sort());
+});

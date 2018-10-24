@@ -7,6 +7,13 @@ use App\Actor;
 
 class ActorsController extends Controller
 {
+	public function index()
+	{
+		$actors = Actor::all();
+
+		return view('actors.index')->with( compact('actors') );
+	}
+
    public function search()
    {
    	return view('actors.search');
