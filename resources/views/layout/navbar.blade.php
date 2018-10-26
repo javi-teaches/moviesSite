@@ -6,7 +6,7 @@
 	<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
 		<div class="navbar-nav">
 			<a class="nav-item nav-link active" href="/">Home </a>
-			<a class="nav-item nav-link active" href="/movies">Movies </a>
+			<a class="nav-item nav-link active" href="{{ route('movies.index') }}">Movies </a>
 			<a class="nav-item nav-link active" href="/actors/search">Actors </a>
 
 		</div>

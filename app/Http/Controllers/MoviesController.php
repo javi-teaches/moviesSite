@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\MoviesRequest;
 
 use App\Movie;
+use App\Genre;
 
 class MoviesController extends Controller
 {
@@ -30,7 +32,9 @@ class MoviesController extends Controller
 	*/
 	public function create()
 	{
-		return view('movies.form');
+		$genres = Genre::orderBy('name')->get();
+
+		return view('movies.form')->with(compact('genres'));
 	}
 
 	/**
@@ -39,49 +43,13 @@ class MoviesController extends Controller
 	* @param  \Illuminate\Http\Request  $request
 	* @return \Illuminate\Http\Response
 	*/
-	public function store(Request $request)
+	public function store(MoviesRequest $request)
 	{
-		$request->validate([
-			'title' => 'required',
-			'rating' => 'required | numeric | max:10',
-			'awards' => 'required | integer',
-			'poster' => 'required | mimes:jpeg,jpg,png',
-			'release_date' => 'required',
-		], [
-			'title.required' => 'El título es obligatorio',
-			'rating.required' => 'El rating es obligatorio',
-			'rating.numeric' => 'El rating debe ser un número',
-			'rating.max' => 'El rating debe ser un número entre 0 y 10',
-			'awards.required' => 'Los premios son obligatorios',
-			'release_date.required' => 'La fecha de lanzamiento es obligatoria',
-			'poster.required' => 'La imagen es obligatoria',
-			'poster.mimes' => 'Formatos permitidos JPG, y PNG',
-		]);
-
 		// Movie::create($request->all());
 
 		$movie = new Movie;
 
-		$movie->title = $request->title;
-		$movie->rating = $request->rating;
-		$movie->awards = $request->awards;
-		$movie->release_date = $request->release_date;
-
-		// Necesito el archivo en una variable esta vez
-		$file = $request->file("poster");
-
-		// Nombre final de la imagen
-		$finalName = strtolower(str_replace(" ", "_", $request->input("title")));
-
-		// Armo un nombre único para este archivo
-		$name = $finalName . uniqid('_image_') . "." . $file->extension();
-
-		// Guardo el archivo en la carpeta
-		$path = $file->storePubliclyAs("public/posters", $name);
-
-		// Guardo en base de datos el nombre de la imagen
-		$movie->poster = $name;
-		$movie->save();
+		self::storeOrUpdate($movie, $request);
 
 		return redirect('/movies');
 	}
@@ -108,8 +76,9 @@ class MoviesController extends Controller
 	public function edit($id)
 	{
 		$movie = Movie::findOrFail($id);
+		$genres = Genre::orderBy('name')->get();
 
-		return view('movies.editForm')->with( compact('movie') );
+		return view('movies.editForm')->with( compact('movie', 'genres') );
 	}
 
 	/**
@@ -119,48 +88,11 @@ class MoviesController extends Controller
 	* @param  int  $id
 	* @return \Illuminate\Http\Response
 	*/
-	public function update(Request $request, $id)
+	public function update(MoviesRequest $request, $id)
 	{
-		$request->validate([
-			'title' => 'required',
-			'rating' => 'required | numeric | max:10',
-			'awards' => 'required | integer',
-			'poster' => 'required | mimes:jpeg,jpg,png',
-			'release_date' => 'required',
-		], [
-			'title.required' => 'El título es obligatorio',
-			'rating.required' => 'El rating es obligatorio',
-			'rating.numeric' => 'El rating debe ser un número',
-			'rating.max' => 'El rating debe ser un número entre 0 y 10',
-			'awards.required' => 'Los premios son obligatorios',
-			'release_date.required' => 'La fecha de lanzamiento es obligatoria',
-			'poster.required' => 'La imagen es obligatoria',
-			'poster.mimes' => 'Formatos permitidos JPG, y PNG',
-		]);
-
 		$movie = Movie::find($id);
 
-		$movie->title = $request->title;
-		$movie->rating = $request->rating;
-		$movie->awards = $request->awards;
-		$movie->release_date = $request->release_date;
-
-		// Necesito el archivo en una variable esta vez
-		$file = $request->file("poster");
-
-		// Nombre final de la imagen
-		$finalName = strtolower(str_replace(" ", "_", $request->input("title")));
-
-		// Armo un nombre único para este archivo
-		$name = $finalName . uniqid('_image_') . "." . $file->extension();
-
-		// Guardo el archivo en la carpeta
-		$path = $file->storePubliclyAs("public/posters", $name);
-
-		// Guardo en base de datos el nombre de la imagen
-		$movie->poster = $name;
-
-		$movie->save();
+		self::storeOrUpdate($movie, $request);
 
 		return redirect('/movies')->with('edited', "Movie editada: $movie->title");
 	}
@@ -181,8 +113,30 @@ class MoviesController extends Controller
 		} catch (\Exception $e) {
 			return redirect('/movies/'.$id)->with('errorDeleted', 'No se pudo eliminar :(');
 		}
+	}
 
+	public function storeOrUpdate($movie, $request)
+	{
+		$movie->title = $request->title;
+		$movie->rating = $request->rating;
+		$movie->awards = $request->awards;
+		$movie->genre_id = $request->genre_id;
+		$movie->release_date = $request->release_date;
 
+		// Necesito el archivo en una variable esta vez
+		$file = $request->file("poster");
 
+		// Nombre final de la imagen
+		$finalName = strtolower(str_replace(" ", "_", $request->input("title")));
+
+		// Armo un nombre único para este archivo
+		$name = $finalName . uniqid('_image_') . "." . $file->extension();
+
+		// Guardo el archivo en la carpeta
+		$file->storePubliclyAs("public/posters", $name);
+
+		// Guardo en base de datos el nombre de la imagen
+		$movie->poster = $name;
+		$movie->save();
 	}
 }

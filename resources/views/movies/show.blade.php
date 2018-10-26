@@ -17,7 +17,7 @@
 	<hr>
 	<a href="/movies" class="btn btn-info">volver</a>
 	<a href="/movies/{{ $movie->id }}/edit" class="btn btn-warning">actualizar</a>
-	<form action="/movies/{{ $movie->id }}" method="post" style="display: inline-block;">
+	<form action="{{ route('movies.destroy', $movie->id) }}" method="post" style="display: inline-block;">
 		@csrf
 		{{ method_field('DELETE') }}
 		<button type="submit" class="btn btn-danger">borrar</button>

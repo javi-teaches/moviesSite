@@ -10,7 +10,7 @@ class Movie extends Model
 
 	// protected $guarded = [];
 
-	protected $fillable = ['title', 'rating', 'awards', 'release_date', 'poster'];
+	protected $fillable = ['title', 'rating', 'awards', 'release_date', 'poster', 'genre_id'];
 
 	protected $dates = ['release_date'];
 

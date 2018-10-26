@@ -29,4 +29,9 @@ class ActorsController extends Controller
 
 		return view('actors.results')->with( compact('result', 'queryString') );
 	}
+
+	public function show()
+	{
+		// code...
+	}
 }

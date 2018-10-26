@@ -15,7 +15,7 @@
 		</div>
 	@endif
 
-	<form action="/movies/store" method="post" enctype="multipart/form-data">
+	<form action="{{ route('movies.store') }}" method="post" enctype="multipart/form-data">
 		@csrf
 		<div class="form-group">
 			<label>Title:</label>
@@ -38,6 +38,21 @@
 		    	<input type="file" class="custom-file-input" id="customFile" name="poster">
 		    	<label class="custom-file-label" for="customFile">Choose file...</label>
 		  	</div>
+		</div>
+
+		<div class="form-group">
+			<label>Genre:</label>
+			<select class="form-control" name="genre_id" value="{{ old('genre_id') }}">
+					<option value="">Elegí</option>
+				@foreach ($genres as $genre)
+		      	<option
+						value="{{ $genre->id }}"
+						{{ $genre->id == old('genre_id') ? 'selected' : '' }}
+					>
+						{{ $genre->name }}
+					</option>
+		      @endforeach
+		   </select>
 		</div>
 
 		<div class="form-group">

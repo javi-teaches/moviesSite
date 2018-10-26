@@ -55,6 +55,21 @@
 		</div>
 
 		<div class="form-group">
+			<label>Genre:</label>
+			<select class="form-control" name="genre_id" value="{{ old('genre_id') }}">
+				<option value="">Elegí</option>
+				@foreach ($genres as $genre)
+					<option
+						value="{{ $genre->id }}"
+						{{ $genre->id == $movie->genre_id ? 'selected' : '' }}
+					>
+						{{ $genre->name }}
+					</option>
+				@endforeach
+		   </select>
+		</div>
+
+		<div class="form-group">
 			<label>Release: </label>
 			<input type="date" name="release_date" class="form-control" value="{{ $movie->release_date->format('Y-m-d') }}">
 		</div>
