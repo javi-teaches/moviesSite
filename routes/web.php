@@ -14,7 +14,8 @@ use Illuminate\Support\Facades\DB;
 */
 
 Route::get('/', function () {
-   return redirect('/movies');
+
+   return view('home');
 });
 //
 // Route::get('/genres', function () {
@@ -22,7 +23,19 @@ Route::get('/', function () {
 //    return view('genres.index')->with(compact('genres'));
 // });
 
-Route::resource('movies', 'MoviesController');
+
+// Requieren autenticacion
+Route::middleware('auth')->group(function() {
+	Route::get('/movies/create', 'MoviesController@create')
+			->name('movies.create');
+
+});
+
+
+// No requieren autenticacion
+Route::resource('movies', 'MoviesController')->except('create');
+
+
 // Route::get('/movies', 'MoviesController@index')->name('movies.index');
 // Route::get('/movies/create', 'MoviesController@create')->name('movies.create');
 // Route::get('/movies/{id}', 'MoviesController@show')->name('movies.show');
@@ -52,3 +65,7 @@ Route::get('/actors/result/', 'ActorsController@result')->name('actors.result');
 //
 // 	dd($movies->pluck('title')->sort());
 // });
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

@@ -1,9 +1,9 @@
-@extends('layout.base')
+@extends('layouts.app')
 
 
 @section('title', 'Movies')
 
-@section('main_content')
+@section('content')
 	<h2>Editando película: {{ $movie->title }}</h2>
 
 	<img src="/storage/posters/{{ $movie->poster }}" width="200">

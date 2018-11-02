@@ -1,8 +1,8 @@
-@extends('layout.base')
+@extends('layouts.app')
 
 @section('title', 'Movies')
 
-@section('main_content')
+@section('content')
 	<h2>Crear movie</h2>
 
 	@if (count($errors) > 0)

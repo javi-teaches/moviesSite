@@ -1,8 +1,8 @@
-@extends('layout.base')
+@extends('layouts.app')
 
 @section('title', 'Movies')
 
-@section('main_content')
+@section('content')
 	<h2>Listado de películas - Total ({{ $allMovies }}) - {{ $myTime->toDateTimeString() }}</h2>
 
 	@if ( session('deleted') )

@@ -1,8 +1,8 @@
-@extends('layout.base')
+@extends('layouts.app')
 
 @section('title', 'Movies')
 
-@section('main_content')
+@section('content')
 	<h2>{{ $movie->title }}</h2>
 	@if ( session('errorDeleted') )
 		<div class="alert alert-danger">
