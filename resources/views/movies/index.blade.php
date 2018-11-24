@@ -19,6 +19,7 @@
 
 	<br>
 	<a href="/movies/create" class="btn btn-info btn-lg">crear movie</a>
+	<a href="/apiMovies" class="btn btn-info btn-lg">crear movie with fetch</a>
 	<br>
 	<ul>
 	@foreach ($movies as $oneMovie)

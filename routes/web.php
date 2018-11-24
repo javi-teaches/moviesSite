@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\DB;
 
+use Illuminate\Http\Request;
+use App\Movie;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -14,27 +17,51 @@ use Illuminate\Support\Facades\DB;
 */
 
 Route::get('/', function () {
-
-   return view('home');
+   return redirect('/movies');
 });
-//
+
+Route::get('/apiMoviesForm', function (){
+	return view('testApi');
+});
+
+Route::post('/apiMoviesPost', function (Request $req){
+	$data = json_decode($req->input('fromJS'));
+
+	$movie = new Movie;
+
+	$movie->title = $data->title;
+	$movie->rating = $data->rating;
+	$movie->awards = $data->awards;
+	$movie->release_date = $data->release_date;
+
+	$movie->save();
+
+	return ['status', 'ok'];
+});
+
+Route::get('/apiMoviesGet', function (){
+	$movies = Movie::orderBy('title')->get();
+	return $movies;
+});
+
+Route::get('/saveMovie', function () {
+	return view('saveMovie');
+});
+
 // Route::get('/genres', function () {
 // 	$genres = DB::table('genres')->get();
 //    return view('genres.index')->with(compact('genres'));
 // });
 
-
 // Requieren autenticacion
 Route::middleware('auth')->group(function() {
-	Route::get('/movies/create', 'MoviesController@create')
-			->name('movies.create');
-
+	Route::get('/movies/create', 'MoviesController@create')->name('movies.create');
+	Route::delete('/movies/{id}', 'MoviesController@destroy')->name('movies.delete');
+	Route::get('/movies/{id}/edit', 'MoviesController@edit')->name('movies.edit');
 });
 
-
 // No requieren autenticacion
-Route::resource('movies', 'MoviesController')->except('create');
-
+Route::resource('movies', 'MoviesController')->except(['create', 'delete', 'edit']);
 
 // Route::get('/movies', 'MoviesController@index')->name('movies.index');
 // Route::get('/movies/create', 'MoviesController@create')->name('movies.create');
@@ -50,7 +77,6 @@ Route::get('/actors/result/', 'ActorsController@result')->name('actors.result');
 
 // Route::get('/genres', 'GenresController@index');
 
-//
 // Route::get('/testCollection', function (){
 // 	$movies = \App\Movie::all('title', 'rating');
 //
@@ -69,3 +95,8 @@ Route::get('/actors/result/', 'ActorsController@result')->name('actors.result');
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/apiMovies', function () {
+	$movies = Movie::orderBy('title')->get();
+	return $movies;
+});
