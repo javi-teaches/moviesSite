@@ -36,7 +36,7 @@ Route::post('/apiMoviesPost', function (Request $req){
 
 	$movie->save();
 
-	return ['status', 'ok'];
+	return ['status' => 'ok'];
 });
 
 Route::get('/apiMoviesGet', function (){
@@ -99,4 +99,14 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/apiMovies', function () {
 	$movies = Movie::orderBy('title')->get();
 	return $movies;
+});
+
+Route::get('/genres', function () {
+	$genre = \App\Genre::find(1)->movies;
+	return $genre;
+});
+
+Route::get('/actors', function () {
+	$actor = \App\Actor::find(13);
+	dd($actor->first_name, $actor->movies);
 });

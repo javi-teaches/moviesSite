@@ -55,10 +55,9 @@
 				window.fetch(url, params)
 					.then(response => {
 						if (response.status !== 200) console.error(`Problem: ${response.status}`);
-						if (params) return response.text();
-						else return response.json();
+						return response.json();
 					})
-					.then(data => callback(data) || console.log(data))
+					.then(data => callback(data))
 					.catch(error => console.error(`Error: `, error));
 			};
 
@@ -79,7 +78,7 @@
 			};
 
 			const setMovie = data => {
-				if (data === 'Insertado') {
+				if (data.status === 'ok') {
 					contForm.innerHTML += `<div class="alert alert-success">Película insertada exitosamente</div>`;
 				}
 			};

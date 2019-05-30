@@ -13,7 +13,8 @@
 	<p><b>Rating:</b> {{ $movie->rating }}</p>
 	<p><b>Awards:</b> {{ $movie->awards }}</p>
 	<p><b>Genre:</b> {{ $movie->genre ? $movie->genre->name : 'Sin género'}}</p>
-	<img src="/storage/posters/{{ $movie->poster }}" width="200">
+	<img src={{ Storage::url( 'posters/' . $movie->poster ) }} width="200">
+	{{-- <img src="/storage/posters/{{ $movie->poster }}" width="200"> --}}
 	<hr>
 	<a href="/movies" class="btn btn-info">volver</a>
 	@auth
